@@ -1,0 +1,16 @@
+{
+  "name": "pivotal-stories-delivery",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "coffee-script": "^1.9.3",
+    "lodash": "^3.10.0",
+    "pivotaltracker": "^0.1.1"
+  }
+}
