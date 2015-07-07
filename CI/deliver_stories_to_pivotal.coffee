@@ -12,30 +12,23 @@ ENVIRONMENT = "Development"
 
 client = new tracker.Client(TRACKER_TOKEN);
 client.use_ssl = true
-stories = null
 
-client.project(TRACKER_PROJECT_ID).stories.all (error, projectStories) ->
-	console.log '------------------------------------------------------------------------'
-	stories = _.filter projectStories , (it) => it.state == "finished" and _.contains ['bug', 'feature'], it.story_type
+client.project(TRACKER_PROJECT_ID).stories.all {with_state: "finished"}, (error, stories) ->
 
-exec 'git tag | grep staging | tail -n1', (error, stdout, stderr) =>
-  staging_deploy_tag = stdout
+	exec 'git tag | grep staging | tail -n1', (error, staging_deploy_tag, stderr) =>	
+		_.forEach stories, (story) =>
+			console.log "Searching for #{story.id} in local git repo."
+			exec "git log --grep #{story.id}", (error, search_result, stderr) =>
+				process.stdout.write search_result
 
-_.forEach stories, (story) =>
-	console.log "Searching for #{story.id} in local git repo."
+				if search_result.length > 0
+					console.log "Found #{story.id}, marking as delivered to #{ENVIRONMENT}."		
+					story.labels = if story.labels then story.labels + "," else ""
+					story.labels += "#{ENVIRONMENT}"
+					if "#{ENVIRONMENT}" == "Development"
+						story.update current_state: "delivered"
+					else
+						story.update()
 
-	exec 'git log --grep #{story.id} #{staging_deploy_tag}', (error, stdout, stderr) =>
-  		search_result = stdout
-
-	if search_result.length > 0
-		console.log "Found #{story.id}, marking as delivered to #{ENVIRONMENT}."		
-		story.labels = if story.labels then story.labels + "," else ""
-		story.labels += "#{ENVIRONMENT}"
-		if "#{ENVIRONMENT}" == "Development"
-			story.notes.create(text: "Marked as delivered by deploy script.")
-			story.update({current_state: "delivered"})
-		else
-			story.update()
-
-	else
-		console.log "Could not find #{story.id} in git repo."
+				else
+					console.log "Could not find #{story.id} in git repo."
