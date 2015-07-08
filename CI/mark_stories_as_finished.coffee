@@ -4,10 +4,10 @@ _ = require("lodash")
 
 GITHUB_USER = 'Parsimotion'
 GITHUB_LOGIN_USER = 'gusTrucco'
-GITHUB_LOGIN_PASSWORD = 'cinturon8'
+GITHUB_LOGIN_PASSWORD = 'xxxxxxx'
 TRACKER_TOKEN = "368271fdb6f98f3a67301591b9df3785"
 TRACKER_PROJECT_ID = '799115'
-BRANCH_NAME = "mark-stories-as-finished"
+BRANCH_NAME = "Nueva-branch-de-pruebe"
 REPO_NAME = "github-to-pivotal"
 
 class Github
@@ -18,14 +18,10 @@ class Github
 			password: GITHUB_LOGIN_PASSWORD
 
 	getPullRequest: (user, repo, branchName) =>
-		githubApi.pullRequests.getAll {user: user, repo: repo}, (error, pulls) ->
-			console.log pulls.length
-			_.forEach pulls, (p) -> console.log p.body
+		githubApi.pullRequests.getAll {user: GITHUB_USER, repo: repo}, (error, pulls) ->
 			data = _.find pulls, (it) => it.head.split(":")[2] == branchName
-			console.log "----------------------------------------------------------------"
-			console.log data.body
-			console.log "----------------------------------------------------------------"
 			if not data?
+				console.log "No pull request was found for #{branchName}, will try again in 30 seconds..."
 				console.log "No pull request was found for branch #{branchName}, aborting"
 				return
 
@@ -54,7 +50,7 @@ client = new tracker.Client(TRACKER_TOKEN);
 client.use_ssl = true
 
 pullRequest = github.getPullRequest GITHUB_USER, REPO_NAME, BRANCH_NAME
-
+console.log pullRequest
 client.project(TRACKER_PROJECT_ID).stories.all {with_state: "started"}, (error, stories) ->
 	_.forEach stories, (story) =>
 		console.log "Searching for #{story.id} in pull request #{pullRequest.number} in repo #{REPO_NAME}."
@@ -66,4 +62,4 @@ client.project(TRACKER_PROJECT_ID).stories.all {with_state: "started"}, (error, 
 				obj.labels.push { name: "retro" }
 			client.project(TRACKER_PROJECT_ID).story(story.id).update obj, ->
 		else
-			console.log "Coult not find #{story.id} in pull request."
+			console.log "Could not find #{story.id} in pull request."
