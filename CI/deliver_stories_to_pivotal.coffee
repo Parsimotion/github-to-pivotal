@@ -10,7 +10,6 @@ client = new tracker.Client(TRACKER_TOKEN);
 client.use_ssl = true
 
 client.project(TRACKER_PROJECT_ID).stories.all {with_state: "finished"}, (error, stories) ->
-
 	exec 'git tag | grep staging | tail -n1', (error, staging_deploy_tag, stderr) =>	
 		_.forEach stories, (story) =>
 			console.log "Searching for #{story.id} in local git repo."
