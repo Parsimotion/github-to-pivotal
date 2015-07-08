@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "startFinisher": "node mainFinisher.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "coffee-script": "^1.9.3",
+    "github": "^0.2.4",
     "lodash": "^3.10.0",
     "pivotaltracker": "^0.1.1"
   }
