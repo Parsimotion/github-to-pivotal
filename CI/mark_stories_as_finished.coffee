@@ -46,8 +46,8 @@ github.getPullRequest(GITHUB_USER, REPO_NAME, BRANCH_NAME).then (pullRequest) ->
 			if pullRequest.belongsToStory(story.id)
 				console.log "Found #{story.id}, marking as finished."			
 				retroMessage = pullRequest.retroMessage()
-				if not retroMessage
-					obj = {labels: story.labels, current_state: "finished"}
+				obj = {labels: story.labels, current_state: "finished"}
+				if retroMessage
 					obj.labels.push { name: "retro" }
 				client.project(TRACKER_PROJECT_ID).story(story.id).update obj, ->
 			else

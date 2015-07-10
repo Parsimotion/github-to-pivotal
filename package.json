@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node main.js",
-    "startFinisher": "node mainFinisher.js"
+    "deliver": "node mainDeliver.js",
+    "finish": "node mainFinisher.js"
   },
   "author": "",
   "license": "ISC",
