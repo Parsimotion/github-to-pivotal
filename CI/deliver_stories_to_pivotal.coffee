@@ -3,8 +3,8 @@ _ = require("lodash")
 exec = require('child_process').exec;
 
 TRACKER_TOKEN = process.env.npm_config_trackerToken
-TRACKER_PROJECT_ID =process.env.npm_config_trackerProjectId
-ENVIRONMENT = process.env.npm_config_enviroment
+TRACKER_PROJECT_ID = process.env.npm_config_trackerProjectId
+ENVIRONMENT = process.env.npm_config_environment
 
 client = new tracker.Client(TRACKER_TOKEN);
 client.use_ssl = true
@@ -19,7 +19,7 @@ client.project(TRACKER_PROJECT_ID).stories.all {with_state: "finished"}, (error,
 					console.log "Found #{story.id}, marking as delivered to #{ENVIRONMENT}."
 					obj = {labels: story.labels}
 					obj.labels.push { name: "#{ENVIRONMENT}" }
-					if "#{ENVIRONMENT}" == "Development"
+					if "#{ENVIRONMENT}" == "development"
 						obj.current_state = "delivered"
 					client.project(TRACKER_PROJECT_ID).story(story.id).update obj, ->
 				else

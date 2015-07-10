@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node mainFinisher.js",
+    "start": "node main.js",
     "startFinisher": "node mainFinisher.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^2.9.33",
     "coffee-script": "^1.9.3",
     "github": "^0.2.4",
     "lodash": "^3.10.0",
