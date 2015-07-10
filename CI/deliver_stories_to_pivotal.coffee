@@ -2,15 +2,15 @@ tracker = require('pivotaltracker')
 _ = require("lodash")
 exec = require('child_process').exec;
 
-TRACKER_TOKEN = process.env.npm_config_trackerToken
-TRACKER_PROJECT_ID = process.env.npm_config_trackerProjectId
-ENVIRONMENT = process.env.npm_config_environment
+TRACKER_TOKEN = process.argv[2]
+TRACKER_PROJECT_ID = process.argv[3]
+ENVIRONMENT = process.argv[4]
 
 client = new tracker.Client(TRACKER_TOKEN);
 client.use_ssl = true
 
 client.project(TRACKER_PROJECT_ID).stories.all {with_state: "finished"}, (error, stories) ->
-	exec 'git tag | grep staging | tail -n1', (error, staging_deploy_tag, stderr) =>	
+	exec 'git tag | grep staging | tail -n1', (error, staging_deploy_tag, stderr) =>
 		_.forEach stories, (story) =>
 			console.log "Searching for #{story.id} in local git repo."
 			exec "git log --grep #{story.id}", (error, search_result, stderr) =>

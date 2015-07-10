@@ -3,11 +3,11 @@ GitHubApi = require("github");
 _ = require("lodash")
 Promise = require("bluebird")
 
-GITHUB_USER = process.env.npm_config_githubUser
-TRACKER_TOKEN = process.env.npm_config_trackerToken
-TRACKER_PROJECT_ID = process.env.npm_config_trackerProjectId
-BRANCH_NAME = process.env.npm_config_branchName
-REPO_NAME = process.env.npm_config_repoName
+GITHUB_USER = process.argv[2]
+TRACKER_TOKEN = process.argv[3]
+TRACKER_PROJECT_ID = process.argv[4]
+BRANCH_NAME = process.argv[5]
+REPO_NAME = process.argv[6]
 
 class PullRequest
 	constructor: (@data) ->
@@ -44,7 +44,7 @@ github.getPullRequest(GITHUB_USER, REPO_NAME, BRANCH_NAME).then (pullRequest) ->
 		_.forEach stories, (story) =>
 			console.log "Searching for #{story.id} in pull request #{pullRequest.data.number} in repo #{REPO_NAME}."
 			if pullRequest.belongsToStory(story.id)
-				console.log "Found #{story.id}, marking as finished."			
+				console.log "Found #{story.id}, marking as finished."
 				retroMessage = pullRequest.retroMessage()
 				obj = {labels: story.labels, current_state: "finished"}
 				if retroMessage

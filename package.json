@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "deliver": "node mainDeliver.js",
-    "finish": "node mainFinisher.js"
+  "bin": {
+    "mark-as-delivered": "mainDeliver.js",
+    "mark-as-finished": "mainFinisher.js"
   },
   "author": "",
   "license": "ISC",
