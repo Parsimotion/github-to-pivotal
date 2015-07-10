@@ -3,11 +3,15 @@ GitHubApi = require("github");
 _ = require("lodash")
 Promise = require("bluebird")
 
-GITHUB_USER = process.argv[2]
-TRACKER_TOKEN = process.argv[3]
-TRACKER_PROJECT_ID = process.argv[4]
-BRANCH_NAME = process.argv[5]
-REPO_NAME = process.argv[6]
+
+TRACKER_TOKEN = process.argv[2]
+TRACKER_PROJECT_ID = process.argv[3]
+GITHUB_LOGIN_USER = process.argv[4]
+GITHUB_LOGIN_PASSWORD = process.argv[5]
+REPO_OWNER = process.argv[6]
+REPO_NAME = process.argv[7]
+BRANCH_NAME = process.argv[8]
+
 
 class PullRequest
 	constructor: (@data) ->
@@ -22,6 +26,12 @@ class PullRequest
 			body.substring(body.indexOf(title), body.length)
 
 class Github
+	constructor: ->
+		githubApi.authenticate
+			type: 'basic'
+			username: GITHUB_LOGIN_USER
+			password: GITHUB_LOGIN_PASSWORD
+
 	getPullRequest: (user, repo, branchName) =>
 		githubApi.pullRequests.getAllAsync(user: user, repo: repo, state: 'open').then (pulls) ->
 			data = _.find pulls, (it) => it.head.ref == branchName
@@ -38,7 +48,7 @@ if BRANCH_NAME == "development" || BRANCH_NAME == "master"
 	return
 client = new tracker.Client(TRACKER_TOKEN);
 client.use_ssl = true
-github.getPullRequest(GITHUB_USER, REPO_NAME, BRANCH_NAME).then (pullRequest) ->
+github.getPullRequest(REPO_OWNER, REPO_NAME, BRANCH_NAME).then (pullRequest) ->
 	client.project(TRACKER_PROJECT_ID).stories.all {with_state: "started"}, (error, stories) ->
 		return console.log error if error?
 		_.forEach stories, (story) =>
