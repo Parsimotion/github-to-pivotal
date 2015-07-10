@@ -1,6 +1,6 @@
 {
-  "name": "pivotal-stories-delivery",
-  "version": "0.0.0",
+  "name": "github-to-pivotal",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "bin": {
