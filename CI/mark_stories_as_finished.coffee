@@ -6,11 +6,10 @@ Promise = require("bluebird")
 
 TRACKER_TOKEN = process.argv[2]
 TRACKER_PROJECT_ID = process.argv[3]
-GITHUB_LOGIN_USER = process.argv[4]
-GITHUB_LOGIN_PASSWORD = process.argv[5]
-REPO_OWNER = process.argv[6]
-REPO_NAME = process.argv[7]
-BRANCH_NAME = process.argv[8]
+GITHUB_TOKEN = process.argv[4]
+REPO_OWNER = process.argv[5]
+REPO_NAME = process.argv[6]
+BRANCH_NAME = process.argv[7]
 
 
 class PullRequest
@@ -28,9 +27,8 @@ class PullRequest
 class Github
 	constructor: ->
 		githubApi.authenticate
-			type: 'basic'
-			username: GITHUB_LOGIN_USER
-			password: GITHUB_LOGIN_PASSWORD
+			type: 'oauth'
+			token: GITHUB_TOKEN
 
 	getPullRequest: (user, repo, branchName) =>
 		githubApi.pullRequests.getAllAsync(user: user, repo: repo, state: 'open').then (pulls) ->
