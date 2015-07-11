@@ -9,7 +9,10 @@ ENVIRONMENT = process.argv[4]
 client = new tracker.Client(TRACKER_TOKEN);
 client.use_ssl = true
 
-client.project(TRACKER_PROJECT_ID).stories.all {with_state: "finished"}, (error, stories) ->
+isDevelopment = "#{ENVIRONMENT}" == "development"
+storiesFilter = with_state: if isDevelopment then "finished" else "delivered"
+
+client.project(TRACKER_PROJECT_ID).stories.all storiesFilter, (error, stories) ->
 	exec 'git tag | grep staging | tail -n1', (error, staging_deploy_tag, stderr) =>
 		_.forEach stories, (story) =>
 			console.log "Searching for #{story.id} in local git repo."
@@ -19,7 +22,7 @@ client.project(TRACKER_PROJECT_ID).stories.all {with_state: "finished"}, (error,
 					console.log "Found #{story.id}, marking as delivered to #{ENVIRONMENT}."
 					obj = {labels: story.labels}
 					obj.labels.push { name: "#{ENVIRONMENT}" }
-					if "#{ENVIRONMENT}" == "development"
+					if isDevelopment
 						obj.current_state = "delivered"
 					client.project(TRACKER_PROJECT_ID).story(story.id).update obj, ->
 				else
