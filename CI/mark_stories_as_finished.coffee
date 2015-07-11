@@ -41,7 +41,7 @@ class Github
 githubApi = new GitHubApi(version: '3.0.0')
 Promise.promisifyAll(githubApi.pullRequests);
 github = new Github()
-if BRANCH_NAME == "development" || BRANCH_NAME == "master"
+if BRANCH_NAME == "development" || BRANCH_NAME == "staging" || BRANCH_NAME == "master"
 	console.log "Doesn't make any sense to run this for #{BRANCH_NAME}. Exiting..."
 	return
 client = new tracker.Client(TRACKER_TOKEN);
