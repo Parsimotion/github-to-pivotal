@@ -42,7 +42,7 @@ class Github
             new PullRequest(data)
 
     _getPullRequestByNumber: (user, repo, pullNumber) =>
-        githubApi.pullRequests.getAllAsync(user: user, repo: repo, number: pullNumber).then (data) ->
+        githubApi.pullRequests.getAsync(user: user, repo: repo, number: pullNumber).then (data) ->
             if not data
                 console.log "No pull request was found for pull number #{pullNumber}, aborting"
                 return
