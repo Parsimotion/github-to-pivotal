@@ -11,7 +11,6 @@ REPO_OWNER = process.argv[5]
 REPO_NAME = process.argv[6]
 BRANCH_NAME = process.argv[7]
 
-
 class PullRequest
 	constructor: (@data) ->
 
@@ -30,13 +29,25 @@ class Github
 			type: 'oauth'
 			token: GITHUB_TOKEN
 
-	getPullRequest: (user, repo, branchName) =>
+    getPullRequest: (user, repo, identifier) =>
+        getPull = if _.isNumber identifier then @_getPullRequestByNumber else @_getPullRequestByBranch
+        getPull user, repo, identifier
+
+	_getPullRequestByBranch: (user, repo, branchName) =>
 		githubApi.pullRequests.getAllAsync(user: user, repo: repo, state: 'open').then (pulls) ->
 			data = _.find pulls, (it) => it.head.ref == branchName
 			if not data
 				console.log "No pull request was found for branch #{branchName}, aborting"
 				return
 			new PullRequest(data)
+
+    _getPullRequestByNumber: (user, repo, pullNumber) =>
+        githubApi.pullRequests.getAllAsync(user: user, repo: repo, number: pullNumber).then (data) ->
+            if not data
+                console.log "No pull request was found for pull number #{pullNumber}, aborting"
+                return
+            new PullRequest(data)
+
 
 githubApi = new GitHubApi(version: '3.0.0')
 Promise.promisifyAll(githubApi.pullRequests);
