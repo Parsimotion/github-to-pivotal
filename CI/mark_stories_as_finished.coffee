@@ -10,6 +10,7 @@ GITHUB_TOKEN = process.argv[4]
 REPO_OWNER = process.argv[5]
 REPO_NAME = process.argv[6]
 BRANCH_NAME = process.argv[7]
+PULL_NUMBER = process.argv[8]
 
 class PullRequest
     constructor: (@data) ->
@@ -29,9 +30,8 @@ class Github
             type: 'oauth'
             token: GITHUB_TOKEN
 
-    getPullRequest: (user, repo, identifier) =>
-        getPull = if _.isNumber identifier then @_getPullRequestByNumber else @_getPullRequestByBranch
-        getPull user, repo, identifier
+    getPullRequest: (user, repo, branchName, pullNumber) =>
+        return if branchName is "pullrequest" then @_getPullRequestByNumber(user, repo, pullNumber) else @_getPullRequestByBranch(user, repo, branchName)
 
     _getPullRequestByBranch: (user, repo, branchName) =>
         githubApi.pullRequests.getAllAsync(user: user, repo: repo, state: 'open').then (pulls) ->
@@ -57,7 +57,7 @@ if BRANCH_NAME == "development" || BRANCH_NAME == "staging" || BRANCH_NAME == "m
     return
 client = new tracker.Client(TRACKER_TOKEN);
 client.use_ssl = true
-github.getPullRequest(REPO_OWNER, REPO_NAME, BRANCH_NAME).then (pullRequest) ->
+github.getPullRequest(REPO_OWNER, REPO_NAME, BRANCH_NAME, PULL_NUMBER).then (pullRequest) ->
     client.project(TRACKER_PROJECT_ID).stories.all {with_state: "started"}, (error, stories) ->
         return console.log error if error?
         _.forEach stories, (story) =>
