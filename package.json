@@ -13,7 +13,7 @@
     "bluebird": "^2.9.33",
     "coffee-script": "^1.9.3",
     "github": "^0.2.4",
-    "lodash": "^3.10.0",
+    "lodash": "^4.17.19",
     "pivotaltracker": "^0.1.1"
   }
 }
