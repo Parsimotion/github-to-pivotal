@@ -1,8 +1,7 @@
 tracker = require('pivotaltracker')
-GitHubApi = require("github");
+{ Octokit } = require("@octokit/rest")
 _ = require("lodash")
 Promise = require("bluebird")
-
 
 TRACKER_TOKEN = process.argv[2]
 TRACKER_PROJECT_ID = process.argv[3]
@@ -26,31 +25,26 @@ class PullRequest
 
 class Github
     constructor: ->
-        githubApi.authenticate
-            type: 'oauth'
-            token: GITHUB_TOKEN
+        _.assign this, new Octokit(auth: GITHUB_TOKEN).rest
 
     getPullRequest: (user, repo, branchName, pullNumber) =>
         return if branchName is "pullrequest" then @_getPullRequestByNumber(user, repo, pullNumber) else @_getPullRequestByBranch(user, repo, branchName)
 
-    _getPullRequestByBranch: (user, repo, branchName) =>
-        githubApi.pullRequests.getAllAsync(user: user, repo: repo, state: 'open').then (pulls) ->
-            data = _.find pulls, (it) => it.head.ref == branchName
+    _getPullRequestByBranch: (owner, repo, head) =>
+        this.pulls.list({ owner, repo, head, state: 'open' }).then ({ data: [currentPull] }) ->
+            console.log 'currentPull', currentPull
+            if not currentPull
+                console.log "No pull request was found for head #{head}, aborting"
+                return
+            new PullRequest(currentPull)
+
+    _getPullRequestByNumber: (user, repo, number) =>
+        this.pulls.get({ user, repo, number }).then (data) ->
             if not data
-                console.log "No pull request was found for branch #{branchName}, aborting"
+                console.log "No pull request was found for pull number #{number}, aborting"
                 return
             new PullRequest(data)
 
-    _getPullRequestByNumber: (user, repo, pullNumber) =>
-        githubApi.pullRequests.getAsync(user: user, repo: repo, number: pullNumber).then (data) ->
-            if not data
-                console.log "No pull request was found for pull number #{pullNumber}, aborting"
-                return
-            new PullRequest(data)
-
-
-githubApi = new GitHubApi(version: '3.0.0')
-Promise.promisifyAll(githubApi.pullRequests);
 github = new Github()
 if BRANCH_NAME == "development" || BRANCH_NAME == "staging" || BRANCH_NAME == "master"
     console.log "Doesn't make any sense to run this for #{BRANCH_NAME}. Exiting..."
