@@ -30,8 +30,8 @@ class Github
     getPullRequest: (user, repo, branchName, pullNumber) =>
         return if branchName is "pullrequest" then @_getPullRequestByNumber(user, repo, pullNumber) else @_getPullRequestByBranch(user, repo, branchName)
 
-    _getPullRequestByBranch: (owner, repo, head) =>
-        this.pulls.list({ owner, repo, head, state: 'open' }).then ({ data: [currentPull] }) ->
+    _getPullRequestByBranch: (owner, repo, branchName) =>
+        this.pulls.list({ owner, repo, head: "#{REPO_OWNER}:#{branchName}", state: 'open' }).then ({ data: [currentPull] }) ->
             console.log 'currentPull', currentPull
             if not currentPull
                 console.log "No pull request was found for head #{head}, aborting"
