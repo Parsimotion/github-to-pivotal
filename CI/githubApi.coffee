@@ -3,7 +3,7 @@ Promise = require "bluebird"
 { Octokit } = require("@octokit/rest")
 
 class PullRequest
-    constructor: (@data) -> #console.log({ @data })
+    constructor: (@data) ->
 
     relatedStory: () =>
         body = _.get @data, "body", ""
