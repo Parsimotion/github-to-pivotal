@@ -28,12 +28,8 @@ module.exports = class Github
     constructor: (token) ->
         _.assign this, new Octokit(auth: token).rest
 
-    getPullRequest: (user, repo, branchName, pullNumber) =>
-        return if pullNumber then @_getPullRequestByNumber(user, repo, pullNumber) else @_getPullRequestByBranch(user, repo, branchName)
-
-    #TODO pass REPO_OWNER
-    _getPullRequestByBranch: (owner, repo, branchName) =>
-        Promise.resolve(this.pulls.list({ owner, repo, head: "#{REPO_OWNER}:#{branchName}", state: 'open' }))
+    getPullRequestByBranch: (owner, repo, branchName) =>
+        Promise.resolve(this.pulls.list({ owner, repo, head: "#{owner}:#{branchName}", state: 'open' }))
         .tap(console.log).then ({ data: [currentPull] }) ->
             console.log 'currentPull', currentPull
             if not currentPull
@@ -41,7 +37,7 @@ module.exports = class Github
                 return
             new PullRequest(currentPull)
 
-    _getPullRequestByNumber: (user, repo, number) =>
+    getPullRequestByNumber: (user, repo, number) =>
         Promise.resolve(this.pulls.get({ owner: user, repo, pull_number: number })).then ({ data }) ->
             new PullRequest(data)
         .catch (err) => throw new Error("No pull request was found with number #{number}, aborting")

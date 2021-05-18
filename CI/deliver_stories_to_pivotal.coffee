@@ -46,7 +46,7 @@ getPullNumber = () =>
 
 getPullRequest = (pullNumber) =>
 	console.log "Looking for pull request in Github"
-	githubApi.getPullRequest(REPO_OWNER, REPO_NAME, undefined, 24)
+	githubApi.getPullRequestByNumber(REPO_OWNER, REPO_NAME, pullNumber)
 	.tap (pullRequest) => console.log "Found pull request"
 
 markStoryAsDelivered = (storyId) =>
