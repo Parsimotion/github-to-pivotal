@@ -15,6 +15,9 @@ class PullRequest
 
         storyIdNumber
 
+    number: () =>
+        @data.number
+
     belongsToStory: (id) =>
         _.includes @data.body, "[Finishes ##{id}]"
 
@@ -24,14 +27,13 @@ class PullRequest
         if _.includes body, title
             body.substring(body.indexOf(title), body.length)
 
-module.exports = class Github
+module.exports = class GithubApi
     constructor: (token) ->
         _.assign this, new Octokit(auth: token).rest
 
     getPullRequestByBranch: (owner, repo, branchName) =>
         Promise.resolve(this.pulls.list({ owner, repo, head: "#{owner}:#{branchName}", state: 'open' }))
-        .tap(console.log).then ({ data: [currentPull] }) ->
-            console.log 'currentPull', currentPull
+        .then ({ data: [currentPull] }) ->
             if not currentPull
                 console.log "No pull request was found for head #{head}, aborting"
                 return
