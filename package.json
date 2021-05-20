@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@octokit/rest": "^18.5.2",
-    "bluebird": "^2.9.33",
+    "bluebird": "^3.7.2",
     "coffee-script": "^1.9.3",
     "lodash": "^4.17.21",
     "pivotaltracker": "^0.1.1"
