@@ -12,6 +12,11 @@ module.exports = class PivotalApi
         @_getStory storyId
         .then (story) =>
             throw new Error "Story ##{storyId} not found" unless story
+            
+            if (currentStatus is 'finished' and story.storyType is 'chore')
+                currentStatus = 'started'
+                newStatus = 'accepted'
+            
             if (story.currentState == currentStatus)
                 console.log "Marking story ##{storyId} as #{newStatus}"
                 @_updateStory storyId, current_state: newStatus
