@@ -16,6 +16,7 @@ getPullNumber = () =>
 	console.log "Looking for pull request number in local repo"
 	execAsync pullSearchPattern
 	.then(_.toNumber)
+	.tap (pullNumber) => throw new Error "There are no merged pull requests yet" unless _.isNumber pullNumber
 	.tap (pullNumber) => console.log "Found pull request number: ##{pullNumber}"
 
 getPullRequest = (pullNumber) =>

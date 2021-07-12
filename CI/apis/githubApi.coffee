@@ -12,7 +12,7 @@ class PullRequest
         matches = matchAll regex, body
         storiesIds = _.map matches, _.toNumber
 
-        throw new Error "There is no story linked to the current pull request" unless !_.isEmpty storiesIds
+        throw new Error "The current pull request isn't linked to any story" unless !_.isEmpty storiesIds
 
         storiesIds
 
