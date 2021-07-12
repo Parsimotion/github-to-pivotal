@@ -29,9 +29,10 @@ getPullRequest = (pullNumber) =>
 
 markStoryAsDelivered = (storyId) =>
 	pivotalApi.updateStoryStatus storyId, "finished", "delivered"
+	.catch console.log
 
 getPullNumber()
 .then getPullRequest
-.then (pullRequest) => pullRequest.relatedStory()
-.then markStoryAsDelivered
+.then (pullRequest) => pullRequest.relatedStories()
+.map markStoryAsDelivered
 .catch console.log
