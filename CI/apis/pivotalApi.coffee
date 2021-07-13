@@ -21,7 +21,7 @@ module.exports = class PivotalApi
                 console.log "Marking story ##{storyId} as #{newStatus}"
                 @_updateStory storyId, current_state: newStatus
             else
-                Promise.reject new Error "Story ##{storyId} must be #{currentStatus} to be marked as #{newStatus}"
+                Promise.reject new Error "Story ##{storyId} should be #{currentStatus} to be marked as #{newStatus}, but now it's #{story.currentState}"
 
     _getStory: (storyId) =>
         @_storyApi storyId

@@ -1,19 +1,20 @@
 _ = require("lodash")
 Promise = require "bluebird"
 { Octokit } = require("@octokit/rest")
+matchAll = require("../helpers/matchAll");
 
 class PullRequest
     constructor: (@data) ->
 
-    relatedStory: () =>
+    relatedStories: () =>
         body = _.get @data, "body", ""
-        capture = body.match(/(?:#)([0-9]+)/)
-        storyId = _.get capture, 1
-        storyIdNumber = _.toNumber storyId
+        regex = /(?:#)([0-9]+)/g
+        matches = matchAll regex, body
+        storiesIds = _.map matches, _.toNumber
 
-        throw new Error "There is no story linked to the current pull request" unless _.isFinite storyIdNumber
+        throw new Error "The current pull request isn't linked to any story" unless !_.isEmpty storiesIds
 
-        storyIdNumber
+        storiesIds
 
     number: () =>
         @data.number
