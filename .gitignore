@@ -44,3 +44,7 @@ Temporary Items
 
 /node_modules
 npm-debug.log
+
+site.config
+*.env
+*.env.*
